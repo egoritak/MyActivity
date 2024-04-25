@@ -80,13 +80,11 @@ class NoteApp(App):
         self.duration_label.text = f'Duration: {str(duration)[:-3]}'
 
     def add_note(self, instance):
-        # Get current values
         current_time = datetime.now().replace(hour=int(self.hour_spinner.text), minute=int(self.minute_spinner.text))
         duration = timedelta(hours=int(self.duration_hour_spinner.text), minutes=int(self.duration_minute_spinner.text))
         time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
-        # Write note with timestamp, duration, and note text
         with open('notes.txt', 'a') as f:
-            f.write(f"{time_stamp} - Time: {current_time.strftime('%H:%M')} Duration: {str(duration)[:-3]} Note: {self.note_input.text}\n")
+            f.write(f"time: {current_time.strftime('%H:%M')} duration: {str(duration)[:-3]} text: {self.note_input.text}\n")
         self.note_input.text = ''  # Clear the input field after adding
 
     def show_history(self, instance):
