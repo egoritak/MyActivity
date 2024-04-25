@@ -29,8 +29,6 @@ class NoteApp(App):
             size=(100, 44),
             pos_hint={'center_x': 0.5}
         )
-        
-        # Automatically update time when spinners change
         self.hour_spinner.bind(text=self.update_time)
         self.minute_spinner.bind(text=self.update_time)
 
@@ -50,8 +48,6 @@ class NoteApp(App):
             size=(100, 44),
             pos_hint={'center_x': 0.5}
         )
-
-        # Automatically update duration when spinners change
         self.duration_hour_spinner.bind(text=self.set_duration)
         self.duration_minute_spinner.bind(text=self.set_duration)
 
@@ -84,10 +80,14 @@ class NoteApp(App):
         self.duration_label.text = f'Duration: {str(duration)[:-3]}'
 
     def add_note(self, instance):
+        # Get current values
+        current_time = datetime.now().replace(hour=int(self.hour_spinner.text), minute=int(self.minute_spinner.text))
+        duration = timedelta(hours=int(self.duration_hour_spinner.text), minutes=int(self.duration_minute_spinner.text))
+        time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+        # Write note with timestamp, duration, and note text
         with open('notes.txt', 'a') as f:
-            time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
-            f.write(f"{time_stamp} - {self.note_input.text}\n")
-        self.note_input.text = ''  # Clear the input field
+            f.write(f"{time_stamp} - Time: {current_time.strftime('%H:%M')} Duration: {str(duration)[:-3]} Note: {self.note_input.text}\n")
+        self.note_input.text = ''  # Clear the input field after adding
 
     def show_history(self, instance):
         if os.path.exists('notes.txt'):
