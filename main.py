@@ -7,6 +7,7 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from datetime import datetime, timedelta
 import os
+import json
 
 class NoteApp(App):
     def build(self):
@@ -80,19 +81,24 @@ class NoteApp(App):
         self.duration_label.text = f'Duration: {str(duration)[:-3]}'
 
     def add_note(self, instance):
-        current_time = datetime.now().replace(hour=int(self.hour_spinner.text), minute=int(self.minute_spinner.text))
-        duration = timedelta(hours=int(self.duration_hour_spinner.text), minutes=int(self.duration_minute_spinner.text))
-        time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
-        with open('notes.txt', 'a') as f:
-            f.write(f"time: {current_time.strftime('%H:%M')} duration: {str(duration)[:-3]} text: {self.note_input.text}\n")
+        # Create JSON object
+        note_data = {
+            "time": self.current_time_label.text.split(': ')[1],
+            "duration": self.duration_label.text.split(': ')[1],
+            "text": self.note_input.text
+        }
+        # Write JSON to file
+        with open('notes.json', 'a') as f:
+            json.dump(note_data, f)
+            f.write('\n')  # Ensure each entry is on a new line
         self.note_input.text = ''  # Clear the input field after adding
 
     def show_history(self, instance):
-        if os.path.exists('notes.txt'):
-            with open('notes.txt', 'r') as f:
-                history = f.read()
-            print("Note History:")
-            print(history)
+        if os.path.exists('notes.json'):
+            with open('notes.json', 'r') as f:
+                for line in f:
+                    note = json.loads(line)
+                    print(note)
         else:
             print("No history available.")
 
