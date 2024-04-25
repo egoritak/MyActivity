@@ -29,8 +29,10 @@ class NoteApp(App):
             size=(100, 44),
             pos_hint={'center_x': 0.5}
         )
-        self.update_time_btn = Button(text='Update Time', size_hint=(1, 0.1))
-        self.update_time_btn.bind(on_press=self.update_time)
+        
+        # Automatically update time when spinners change
+        self.hour_spinner.bind(text=self.update_time)
+        self.minute_spinner.bind(text=self.update_time)
 
         # Duration Adjustments
         self.duration_label = Label(text='Duration: 00:05')
@@ -48,8 +50,10 @@ class NoteApp(App):
             size=(100, 44),
             pos_hint={'center_x': 0.5}
         )
-        self.set_duration_btn = Button(text='Set Duration', size_hint=(1, 0.1))
-        self.set_duration_btn.bind(on_press=self.set_duration)
+
+        # Automatically update duration when spinners change
+        self.duration_hour_spinner.bind(text=self.set_duration)
+        self.duration_minute_spinner.bind(text=self.set_duration)
 
         # Note Input and Buttons
         self.note_input = TextInput(hint_text='Note [TEXT]', size_hint=(1, 0.2))
@@ -62,22 +66,20 @@ class NoteApp(App):
         self.layout.add_widget(self.current_time_label)
         self.layout.add_widget(self.hour_spinner)
         self.layout.add_widget(self.minute_spinner)
-        self.layout.add_widget(self.update_time_btn)
         self.layout.add_widget(self.duration_label)
         self.layout.add_widget(self.duration_hour_spinner)
         self.layout.add_widget(self.duration_minute_spinner)
-        self.layout.add_widget(self.set_duration_btn)
         self.layout.add_widget(self.note_input)
         self.layout.add_widget(self.add_note_btn)
         self.layout.add_widget(self.show_history_btn)
 
         return self.layout
 
-    def update_time(self, instance):
+    def update_time(self, spinner, text):
         current_time = datetime.now().replace(hour=int(self.hour_spinner.text), minute=int(self.minute_spinner.text))
         self.current_time_label.text = f'Current Time: {current_time.strftime("%H:%M")}'
 
-    def set_duration(self, instance):
+    def set_duration(self, spinner, text):
         duration = timedelta(hours=int(self.duration_hour_spinner.text), minutes=int(self.duration_minute_spinner.text))
         self.duration_label.text = f'Duration: {str(duration)[:-3]}'
 
